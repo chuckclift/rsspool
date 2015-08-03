@@ -22,3 +22,11 @@ https://www.reddit.com/r/artificial/.rss
 https://www.reddit.com/r/science/.rss
 https://www.reddit.com/r/futurology/.rss
 https://rss.slashdot.org/Slashdot/slashdotMain
+http://www.theplatform.net/feed/
+http://www.hpcwire.com/off-the-wire/feed/
+http://www.hpcwire.com/category/features/feed/
+http://www.hpcwire.com/multimedia/feed/
+http://www.ibmsystemsmag.com/?rss1=IBMNewsUpdates
+https://www.reddit.com/r/java_programming/.rss
+https://www.reddit.com/r/java/.rss
+https://www.reddit.com/r/linux/.rss

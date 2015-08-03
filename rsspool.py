@@ -4,6 +4,7 @@ from multiprocessing import Pool
 import feedparser
 import re
 import time
+import sys
 
 def remove_encoding_errors(text):
     # removing all html tags
@@ -17,7 +18,14 @@ def remove_encoding_errors(text):
     return fixed_text
 
 def main():
-    p = Pool(4)
+    if "-p" in sys.argv:
+        argument_index = sys.argv.index("-p") 
+        if len(sys.argv) > argument_index + 1:
+            processes = int(sys.argv[argument_index + 1])
+    else:
+        processes = 4 
+            
+    p = Pool(processes)
     
     # remember slashdot and ars technica
     with open("url.txt") as u:
@@ -25,7 +33,7 @@ def main():
         print("found " + str(len(urls)) + " urls")
 
     print("retreiving rss feeds")
-    
+
     # retrieving the web pages
     feeds = p.map(feedparser.parse, urls)
 
@@ -38,12 +46,13 @@ def main():
     titles = [remove_encoding_errors(t.title) for t in entries]
     with open("headline.txt", "w") as h:
         h.write("\n".join(titles))
-
+    print("processes: ", processes)
      
 if __name__ == "__main__":
     start = time.time()
     main()    
-    print("Job took " + str(time.time() - start) + "seconds")
+    print("Job took ", str(round(time.time() - start, 2)), "seconds")
+    
 
 
 
