@@ -12,9 +12,13 @@ def remove_encoding_errors(text):
 
     # removing encoding errors
     fixed_text = fixed_text.replace('&rsquo;', "'") 
-    fixed_text = fixed_text.replace('&#39;', "'") 
-    fixed_text = fixed_text.replace('&#039;', "'") 
-    fixed_text = fixed_text.replace('&nbsp;', " ") 
+
+    # getting rid of &#039; and similar
+    fixed_text = re.sub("&#[0-9]{1,4};", "'", fixed_text)
+
+    # removing everything else
+    fixed_text = re.sub("&#.{1,9};", " ", fixed_text)
+
     fixed_text = fixed_text.replace('&amp;', " and ")
     return fixed_text
 
