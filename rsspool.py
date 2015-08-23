@@ -6,26 +6,31 @@ import feedparser
 import re
 import time
 
-def remove_encoding_errors(text):
+def cleanup(text):
     # removing all html tags
     fixed_text = re.sub("<(.*?)>", "", text)
 
-    # removing encoding errors
+    # bad apostrophe encodings
     fixed_text = fixed_text.replace('&rsquo;', "'") 
+
+    # bad quote sign encodings
+    fixed_text = fixed_text.replace('&quot;', '"') 
 
     # getting rid of &#039; and similar
     fixed_text = re.sub("&#[0-9]{1,4};", "'", fixed_text)
 
-    # removing everything else
+    # removing everything else that follows that form
     fixed_text = re.sub("&#.{1,9};", " ", fixed_text)
 
     fixed_text = fixed_text.replace('&amp;', " and ")
-    return fixed_text
+    return " ".join(fixed_text.split())
+
 
 def main():
     parser = optparse.OptionParser()
     parser.add_option("-p", action="store", default=8, type="int", 
                       help="Number of threads running")
+    parser.add_option("-v", action="store", default=False, type="Boolean")
     options, args = parser.parse_args()
             
     p = Pool(options.p)
@@ -33,23 +38,28 @@ def main():
     # remember slashdot and ars technica
     with open("url.txt") as u:
         urls = u.read().split()
-        print("found " + str(len(urls)) + " urls")
-
-    print("retreiving rss feeds")
+        if parser.v:
+            print("found " + str(len(urls)) + " urls")
+            print("retreiving rss feeds")
 
     # retrieving the web pages
     feeds = p.map(feedparser.parse, urls)
-    print("Processing feeds")
+    if parser.v:
+        print("Processing feeds")
+
     entries = [a for b in feeds for a in b.entries]
+
     title_and_summary = [t.title + '\n' + t.summary for t in entries]
-    title_and_summary = [remove_encoding_errors(a) for a in title_and_summary]
+    title_and_summary = [cleanup(a) for a in title_and_summary]
     with open("summaries.txt", "w") as h:
         h.write("\n".join(title_and_summary))
 
-    titles = [remove_encoding_errors(t.title) for t in entries]
+    titles = [cleanup(t) for t in titles]
     with open("headline.txt", "w") as h:
         h.write("\n".join(titles))
-    print("processes: ", options.p)
+
+    if parser.v:
+        print("processes: ", options.p)
      
 if __name__ == "__main__":
     start = time.time()
