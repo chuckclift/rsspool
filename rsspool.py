@@ -1,4 +1,4 @@
-#!/usr/bin/python3.4
+#!/usr/bin/env python3
 
 from multiprocessing import Pool
 import optparse
@@ -30,7 +30,7 @@ def main():
     parser = optparse.OptionParser()
     parser.add_option("-p", action="store", default=8, type="int", 
                       help="Number of threads running")
-    parser.add_option("-v", action="store", default=False, type="Boolean")
+#    parser.add_option("-v", action="store", default=False)
     options, args = parser.parse_args()
             
     p = Pool(options.p)
@@ -38,14 +38,14 @@ def main():
     # remember slashdot and ars technica
     with open("url.txt") as u:
         urls = u.read().split()
-        if parser.v:
-            print("found " + str(len(urls)) + " urls")
-            print("retreiving rss feeds")
+#        if parser.v:
+#            print("found " + str(len(urls)) + " urls")
+#            print("retreiving rss feeds")
 
     # retrieving the web pages
     feeds = p.map(feedparser.parse, urls)
-    if parser.v:
-        print("Processing feeds")
+#    if parser.v:
+#        print("Processing feeds")
 
     entries = [a for b in feeds for a in b.entries]
 
@@ -58,8 +58,8 @@ def main():
     with open("headline.txt", "w") as h:
         h.write("\n".join(titles))
 
-    if parser.v:
-        print("processes: ", options.p)
+#    if parser.v:
+#        print("processes: ", options.p)
      
 if __name__ == "__main__":
     start = time.time()
