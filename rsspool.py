@@ -5,6 +5,7 @@ import optparse
 import feedparser
 import re
 import time
+import sys
 
 def cleanup(text):
     # removing all html tags
@@ -43,7 +44,7 @@ def main():
 #            print("retreiving rss feeds")
 
     # retrieving the web pages
-    feeds = p.map(feedparser.parse, urls)
+    feeds = p.map(feedparser.parse, [a for a in sys.stdin])
 #    if parser.v:
 #        print("Processing feeds")
 
@@ -54,7 +55,7 @@ def main():
     with open("summaries.txt", "w") as h:
         h.write("\n".join(title_and_summary))
 
-    titles = [cleanup(t) for t in titles]
+    titles = [cleanup(t.title) for t in entries]
     with open("headline.txt", "w") as h:
         h.write("\n".join(titles))
 
