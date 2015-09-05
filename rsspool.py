@@ -26,6 +26,12 @@ def cleanup(text):
     fixed_text = fixed_text.replace('&amp;', " and ")
     return " ".join(fixed_text.split())
 
+def get_feed(url):
+    try:
+        return feedparser.parse(url)
+    except:
+        print('Error with',url)
+        return None
 
 def main():
     parser = optparse.OptionParser()
@@ -37,14 +43,9 @@ def main():
     p = Pool(options.p)
     
     # remember slashdot and ars technica
-    with open("url.txt") as u:
-        urls = u.read().split()
-#        if parser.v:
-#            print("found " + str(len(urls)) + " urls")
-#            print("retreiving rss feeds")
 
     # retrieving the web pages
-    feeds = p.map(feedparser.parse, [a for a in sys.stdin])
+    feeds = p.map(get_feed, [a for a in sys.stdin])
 #    if parser.v:
 #        print("Processing feeds")
 
